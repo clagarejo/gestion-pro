@@ -1,0 +1,19 @@
+{
+  "name": "gestionPro",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "license": "MIT",
+  "workspaces": [
+    "servidor",
+    "cliente"
+  ],
+  "scripts": {
+    "dev:servidor": "yarn workspace servidor dev",
+    "dev:cliente": "yarn workspace cliente dev",
+    "dev": "concurrently \"yarn workspace servidor dev\" \"yarn workspace cliente dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
