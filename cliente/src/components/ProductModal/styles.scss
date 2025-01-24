@@ -1,4 +1,4 @@
-@import '../../styles/variables';
+@use '../../styles/variables';
 
 .modal {
     position: fixed;
@@ -65,7 +65,7 @@
 
         input:focus {
             outline: none;
-            border-color: $primary-color;
+            border-color: variables.$primary-color;
         }
     }
 
@@ -75,7 +75,7 @@
 
         button {
             padding: 10px 20px;
-            background-color: $primary-color;
+            background-color: variables.$primary-color;
             color: white;
             border: none;
             border-radius: 4px;
@@ -83,7 +83,7 @@
             transition: background-color 0.3s ease;
 
             &:hover {
-                background-color: $primary-color-hover;
+                background-color: variables.$primary-color-hover;
             }
         }
     }

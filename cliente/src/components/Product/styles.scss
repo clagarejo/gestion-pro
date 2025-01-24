@@ -1,4 +1,4 @@
-@import '../../styles/variables';
+@use '../../styles/variables';
 
 
 .tr-options {
@@ -17,10 +17,10 @@
     }
 
     .editBottom {
-        background-color: $edit-bottom;
+        background-color: variables.$edit-bottom;
 
         &:hover {
-            background-color: $edit-bottom-hover;
+            background-color: variables.$edit-bottom-hover;
         }
     
         &:focus {
@@ -30,10 +30,10 @@
     }
 
     .deleteBottom {
-        background-color: $delete-bottom;
+        background-color: variables.$delete-bottom;
 
         &:hover {
-            background-color: $delete-bottom-hover;
+            background-color: variables.$delete-bottom-hover;
         }
     
         &:focus {

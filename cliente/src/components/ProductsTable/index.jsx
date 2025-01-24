@@ -1,16 +1,18 @@
+import { FaPlus } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { ProductModal } from '../ProductModal';
 import { Product } from '../Product';
-import './styles.scss';
 import { useProductStore } from '@/store/useProductStore';
-import Swal from 'sweetalert2';  // Importamos SweetAlert2
+import Swal from 'sweetalert2';
+
+import './styles.scss';
 
 export const ProductsTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productToEdit, setProductToEdit] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [searchTerm, setSearchTerm] = useState('');  // Estado para almacenar el término de búsqueda
-    const { products, fetchProducts, deleteProduct, searchProductsByName } = useProductStore(); // Asegúrate de tener deleteProduct en tu store
+    const [searchTerm, setSearchTerm] = useState('');
+    const { products, fetchProducts, deleteProduct, searchProductsByName, loading } = useProductStore();
 
     const itemsPerPage = 5;
 
@@ -20,9 +22,9 @@ export const ProductsTable = () => {
 
     useEffect(() => {
         if (searchTerm) {
-            searchProductsByName(searchTerm);  // Llamamos a la función de búsqueda
+            searchProductsByName(searchTerm);
         } else {
-            fetchProducts();  // Si no hay búsqueda, traemos todos los productos
+            fetchProducts();
         }
     }, [searchTerm, fetchProducts, searchProductsByName]);
 
@@ -47,12 +49,12 @@ export const ProductsTable = () => {
     };
 
     const handleDeleteProduct = (productId) => {
-        deleteProduct(productId);  // Eliminar el producto directamente
+        deleteProduct(productId);
         Swal.fire('¡Eliminado!', 'El producto ha sido eliminado correctamente.', 'success');
     };
 
     const handleSearchChange = (e) => {
-        setSearchTerm(e.target.value);  // Actualizamos el término de búsqueda
+        setSearchTerm(e.target.value);
     };
 
     return (
@@ -62,10 +64,12 @@ export const ProductsTable = () => {
                     className="search-products"
                     type="text"
                     placeholder="Buscar productos"
-                    value={searchTerm}  // Enlazamos el valor del input con el estado searchTerm
-                    onChange={handleSearchChange}  // Llamamos a la función para actualizar el estado
+                    value={searchTerm}
+                    onChange={handleSearchChange}
                 />
-                <button onClick={() => handleOpenModal()}>Crear producto</button>
+                <button onClick={() => handleOpenModal()}>
+                    <FaPlus style={{ marginRight: '10px' }} /> Crear producto
+                </button>
             </div>
 
             <table className="table">
@@ -79,14 +83,22 @@ export const ProductsTable = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {paginatedProducts.map((product, index) => (
-                        <Product
-                            key={product._id || index}
-                            product={product}
-                            handleOpenModal={handleOpenModal}
-                            handleDeleteProduct={handleDeleteProduct}  // Pasamos la función de eliminación
-                        />
-                    ))}
+                    { paginatedProducts.length === 0 ? (
+                        <tr>
+                            <td colSpan="5" className="no-products">
+                                No hay productos para mostrar, crea uno.
+                            </td>
+                        </tr>
+                    ) : (
+                        paginatedProducts.map((product, index) => (
+                            <Product
+                                key={product._id || index}
+                                product={product}
+                                handleOpenModal={handleOpenModal}
+                                handleDeleteProduct={handleDeleteProduct}
+                            />
+                        ))
+                    )}
                 </tbody>
             </table>
 

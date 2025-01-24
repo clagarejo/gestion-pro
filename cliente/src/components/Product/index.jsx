@@ -3,19 +3,27 @@ import { useProductStore } from '@/store/useProductStore';
 import './styles.scss';
 
 export const Product = ({ product, handleOpenModal }) => {
-    const productId = product._id
-    const { name, category, price, stock } = product
+    const productId = product._id;
+    const { name, category, price, stock } = product;
     const { deleteProduct } = useProductStore();
 
     const handleDelete = () => {
-        deleteProduct(productId);  
+        deleteProduct(productId);
+    };
+
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            minimumFractionDigits: 0, // Evitar decimales si el precio es entero
+        }).format(price);
     };
 
     return (
         <tr>
             <td>{name}</td>
             <td>{category}</td>
-            <td>${price}</td>
+            <td>{formatPrice(price)}(cop)</td>
             <td style={{ textAlign: 'center' }}>{stock}</td>
             <td className="tr-options">
                 <button
