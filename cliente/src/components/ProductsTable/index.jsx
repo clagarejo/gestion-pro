@@ -50,7 +50,6 @@ export const ProductsTable = () => {
 
     const handleDeleteProduct = (productId) => {
         deleteProduct(productId);
-        Swal.fire('¡Eliminado!', 'El producto ha sido eliminado correctamente.', 'success');
     };
 
     const handleSearchChange = (e) => {
@@ -77,9 +76,9 @@ export const ProductsTable = () => {
                     <tr>
                         <th>Nombre del Producto</th>
                         <th>Categoría</th>
-                        <th>Precio</th>
-                        <th style={{ textAlign: 'center' }}>Cantidad en Stock</th>
-                        <th style={{ textAlign: 'center' }}>Opciones</th>
+                        <th className="aling-text">Precio</th>
+                        <th className="aling-text">Cantidad en Stock</th>
+                        <th className="aling-text">Opciones</th>
                     </tr>
                 </thead>
                 <tbody>

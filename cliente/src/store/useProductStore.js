@@ -77,16 +77,31 @@ export const useProductStore = create((set) => ({
     // Función para eliminar un producto
     deleteProduct: async (id) => {
         try {
-            await productsApi.delete(`/${id}`);
-            set((state) => ({
-                products: state.products.filter((product) => product._id !== id),
-            }));
-            Swal.fire({
-                title: 'Producto eliminado',
-                text: 'El producto ha sido eliminado correctamente.',
-                icon: 'success',
-                confirmButtonText: 'Aceptar'
+            const result = await Swal.fire({
+                title: "¿Estás seguro?",
+                text: "Si eliminas este producto no volveras a verlo",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, eliminar",
+                cancelButtonText: "No, cancelar"
             });
+
+            if (result.isConfirmed) {
+                await productsApi.delete(`/${id}`);
+
+                set((state) => ({
+                    products: state.products.filter((product) => product._id !== id),
+                }));
+
+                Swal.fire({
+                    title: 'Producto eliminado',
+                    text: 'El producto ha sido eliminado correctamente.',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
         } catch (error) {
             set({ error: 'Error al eliminar el producto' });
             Swal.fire({
@@ -98,6 +113,7 @@ export const useProductStore = create((set) => ({
         }
     },
 
+
     //Funcion para buscar productos
     searchProductsByName: (name) => {
         set((state) => ({
@@ -106,5 +122,5 @@ export const useProductStore = create((set) => ({
             ),
         }));
     },
-    
+
 }));

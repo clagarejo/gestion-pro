@@ -23,8 +23,8 @@ export const Product = ({ product, handleOpenModal }) => {
         <tr>
             <td>{name}</td>
             <td>{category}</td>
-            <td>{formatPrice(price)}(cop)</td>
-            <td style={{ textAlign: 'center' }}>{stock}</td>
+            <td className="aling-text">{formatPrice(price)}(cop)</td>
+            <td className="aling-text">{stock}</td>
             <td className="tr-options">
                 <button
                     className="button-options editBottom"

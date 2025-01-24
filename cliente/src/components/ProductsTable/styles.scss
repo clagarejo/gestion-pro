@@ -59,7 +59,6 @@
 
     .table {
         width: 100%;
-        background-color: #fff;
         border-radius: 8px;
         margin-top: 20px;
         cursor: pointer;
@@ -72,12 +71,11 @@
         }
 
         th {
-            background-color: #f4f4f4;
             font-weight: bold;
         }
 
         tr:hover {
-            background-color: #f9f9f9;
+            background-color: #595656;
         }
     }
 
@@ -87,7 +85,7 @@
         margin-top: 20px;
 
         .pagination-button {
-            background: #f4f4f4;
+            background: variables.$background-color;
             border: 1px solid #ddd;
             padding: 8px 12px;
             margin: 0 5px;
