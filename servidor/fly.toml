@@ -1,0 +1,25 @@
+# fly.toml app configuration file generated for getion-pro on 2025-01-24T01:05:30-05:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'getion-pro'
+primary_region = 'bog'
+
+[build]
+
+[env]
+  DB_CNN="mongodb+srv://yanc55292:YfrlwNo5DzZl1SYX@gestion-pro.bxcjd.mongodb.net/?retryWrites=true&w=majority&appName=gestion-pro"
+
+[http_service]
+  internal_port = 4000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

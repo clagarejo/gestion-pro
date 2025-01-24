@@ -1,0 +1,145 @@
+@use '../../styles/variables';
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    &.active {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 600px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        color: #000;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+
+        h3 {
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+
+        label {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: variables.$primary-color;
+        }
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+
+        button {
+            padding: 10px 20px;
+            background-color: variables.$primary-color;
+            color: white;    
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+                background-color: variables.$primary-color-hover;
+            }
+        }
+    }
+}
+
+// Media Queries para Responsividad
+
+/* Pantallas pequeñas (móviles) */
+@media (max-width: 600px) {
+    .modal-content {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .modal-header h3 {
+        font-size: 18px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+    }
+
+    .form-group input {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .modal-footer button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+/* Pantallas medianas (tabletas) */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 80%;
+        padding: 25px;
+    }
+
+    .modal-header h3 {
+        font-size: 20px;
+    }
+
+    .form-group label {
+        font-size: 15px;
+    }
+
+    .form-group input {
+        font-size: 15px;
+        padding: 9px;
+    }
+
+    .modal-footer button {
+        padding: 9px 18px;
+        font-size: 15px;
+    }
+}

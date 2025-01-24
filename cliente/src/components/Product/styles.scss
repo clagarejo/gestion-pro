@@ -1,0 +1,44 @@
+@use '../../styles/variables';
+
+
+.tr-options {
+    display: flex;
+    justify-content: center;
+    
+    .button-options {
+        padding: 5px 10px;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-right: 5px;
+        font-size: 20px;
+    }
+
+    .editBottom {
+        background-color: variables.$edit-bottom;
+
+        &:hover {
+            background-color: variables.$edit-bottom-hover;
+        }
+    
+        &:focus {
+            outline: none;
+        }
+
+    }
+
+    .deleteBottom {
+        background-color: variables.$delete-bottom;
+
+        &:hover {
+            background-color: variables.$delete-bottom-hover;
+        }
+    
+        &:focus {
+            outline: none;
+        }
+    }
+
+}
