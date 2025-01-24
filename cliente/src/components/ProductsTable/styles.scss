@@ -1,0 +1,151 @@
+@import '../../styles/variables';
+
+.container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 8px;
+
+    .container_bottom {
+        display: flex;
+        justify-content: space-between;
+        margin: 30px 0;
+
+        .search-products {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px 15px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #333;
+            outline: none;
+            transition: all 0.3s ease;
+
+            &::placeholder {
+                color: #aaa;
+            }
+
+            &:focus {
+                border-color: #007BFF;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            }
+
+            &:hover {
+                border-color: #888;
+            }
+
+            @media (max-width: 768px) {
+                font-size: 14px;
+                max-width: 100%;
+            }
+        }
+
+        button {
+            padding: 15px 25px;
+            background-color: $primary-color;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+
+            &:hover {
+                background-color: $primary-color-hover;
+            }
+        }
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fff;
+        border-radius: 8px;
+        margin-top: 20px;
+
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+
+        .pagination-button {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+
+            &:hover {
+                background: #ddd;
+            }
+
+            &.active {
+                background: $primary-color;
+                color: #fff;
+                border-color: $primary-color;
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        .table {
+            font-size: 12px;
+
+            th,
+            td {
+                padding: 10px;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tr {
+                display: block;
+                margin-bottom: 15px;
+            }
+
+            td {
+                display: block;
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+
+                &:before {
+                    content: attr(data-label);
+                    position: absolute;
+                    left: 10px;
+                    font-weight: bold;
+                }
+            }
+        }
+
+        .pagination {
+            flex-wrap: wrap;
+
+            .pagination-button {
+                margin-bottom: 10px;
+            }
+        }
+    }
+}
