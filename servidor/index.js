@@ -13,6 +13,7 @@ app.use(express.json());
 
 
 app.use('/api/products', require('./routes/products'))
+// app.use('/api/category', require('./routes/category'))
 
 // Iniciar el servidor
 app.listen(PORT, () => {

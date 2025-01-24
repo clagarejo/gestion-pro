@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 import './styles.scss';
 import { useProductStore } from '@/store/useProductStore';
 
@@ -28,30 +29,59 @@ export const ProductModal = ({ product, onClose }) => {
                 stock: ''
             });
         }
-    }, [product]);  
+    }, [product]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
+    const validateForm = () => {
+        const { name, category, price, stock } = formData;
+
+        if (!name.trim()) {
+            Swal.fire('Ups', 'El nombre del producto es obligatorio.', 'warning');
+            return false;
+        }
+
+        if (!category.trim()) {
+            Swal.fire('Ups', 'La categoría del producto es obligatoria.', 'warning');
+            return false;
+        }
+
+        if (price === '' || isNaN(price) || Number(price) <= 0) {
+            Swal.fire('Ups', 'El precio debe ser un número positivo mayor a 0.', 'warning');
+            return false;
+        }
+
+        if (stock === '' || isNaN(stock) || !Number.isInteger(Number(stock)) || Number(stock) < 0) {
+            Swal.fire('Ups', 'La cantidad en stock debe ser un número entero no negativo.', 'warning');
+            return false;
+        }
+
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validateForm()) return;
 
         try {
             if (product) {
                 // Si estamos editando, actualizamos el producto en el store
                 updateProduct(product.product._id, formData);
-                console.log('Producto actualizado:', formData);
+                Swal.fire('Éxito', 'Producto actualizado correctamente.', 'success');
             } else {
                 // Si no estamos editando, agregamos un nuevo producto al store
                 addProduct(formData);
-                console.log('Producto creado:', formData);
+                Swal.fire('Éxito', 'Producto creado correctamente.', 'success');
             }
 
-            onClose();  // Cierra el modal
+            onClose(); // Cierra el modal
         } catch (error) {
             console.error('Error al crear o actualizar el producto:', error);
+            Swal.fire('Error', 'Hubo un problema al procesar tu solicitud.', 'error');
         }
     };
 

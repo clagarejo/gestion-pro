@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { ProductModal } from '../ProductModal';
 import { Product } from '../Product';
 import { useProductStore } from '@/store/useProductStore';
-import Swal from 'sweetalert2';
+import { DarkModeToggle } from '../DarkModeToggle';
 
 import './styles.scss';
 
@@ -58,6 +58,7 @@ export const ProductsTable = () => {
 
     return (
         <div className="container">
+            <DarkModeToggle />
             <div className="container_bottom">
                 <input
                     className="search-products"
