@@ -1,13 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ProductModal } from '../ProductModal';
 import { Product } from '../Product';
 import './styles.scss';
+import { useProductStore } from '@/store/useProductStore';
+import Swal from 'sweetalert2';  // Importamos SweetAlert2
 
 export const ProductsTable = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [productToEdit, setProductToEdit] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState('');  // Estado para almacenar el término de búsqueda
+    const { products, fetchProducts, deleteProduct, searchProductsByName } = useProductStore(); // Asegúrate de tener deleteProduct en tu store
+
     const itemsPerPage = 5;
+
+    useEffect(() => {
+        fetchProducts();
+    }, [fetchProducts]);
+
+    useEffect(() => {
+        if (searchTerm) {
+            searchProductsByName(searchTerm);  // Llamamos a la función de búsqueda
+        } else {
+            fetchProducts();  // Si no hay búsqueda, traemos todos los productos
+        }
+    }, [searchTerm, fetchProducts, searchProductsByName]);
 
     const handleOpenModal = (product = null) => {
         setProductToEdit(product);
@@ -19,17 +36,6 @@ export const ProductsTable = () => {
         setProductToEdit(null);
     };
 
-    const products = [
-        { name: 'Producto 1', category: 'Electrónica', price: 100, stock: 20 },
-        { name: 'Producto 2', category: 'Ropa', price: 25, stock: 50 },
-        { name: 'Producto 3', category: 'Alimentos', price: 15, stock: 80 },
-        { name: 'Producto 4', category: 'Hogar', price: 75, stock: 10 },
-        { name: 'Producto 5', category: 'Deportes', price: 45, stock: 5 },
-        { name: 'Producto 6', category: 'Oficina', price: 30, stock: 25 },
-        { name: 'Producto 7', category: 'Mascotas', price: 20, stock: 40 },
-        { name: 'Producto 8', category: 'Juguetes', price: 50, stock: 15 },
-    ];
-
     const totalPages = Math.ceil(products.length / itemsPerPage);
     const paginatedProducts = products.slice(
         (currentPage - 1) * itemsPerPage,
@@ -40,6 +46,15 @@ export const ProductsTable = () => {
         setCurrentPage(page);
     };
 
+    const handleDeleteProduct = (productId) => {
+        deleteProduct(productId);  // Eliminar el producto directamente
+        Swal.fire('¡Eliminado!', 'El producto ha sido eliminado correctamente.', 'success');
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);  // Actualizamos el término de búsqueda
+    };
+
     return (
         <div className="container">
             <div className="container_bottom">
@@ -47,6 +62,8 @@ export const ProductsTable = () => {
                     className="search-products"
                     type="text"
                     placeholder="Buscar productos"
+                    value={searchTerm}  // Enlazamos el valor del input con el estado searchTerm
+                    onChange={handleSearchChange}  // Llamamos a la función para actualizar el estado
                 />
                 <button onClick={() => handleOpenModal()}>Crear producto</button>
             </div>
@@ -63,7 +80,12 @@ export const ProductsTable = () => {
                 </thead>
                 <tbody>
                     {paginatedProducts.map((product, index) => (
-                        <Product key={index} {...product} handleOpenModal={handleOpenModal} />
+                        <Product
+                            key={product._id || index}
+                            product={product}
+                            handleOpenModal={handleOpenModal}
+                            handleDeleteProduct={handleDeleteProduct}  // Pasamos la función de eliminación
+                        />
                     ))}
                 </tbody>
             </table>

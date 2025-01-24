@@ -1,5 +1,5 @@
 {
-  "name": "gestionPro",
+  "name": "gestion-pro",
   "version": "1.0.0",
   "private": true,
   "main": "index.js",
@@ -17,5 +17,9 @@
     "concurrently": "^9.1.2",
     "dotenv": "^16.4.7",
     "nodemon": "^3.1.9"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "zustand": "^5.0.3"
   }
 }

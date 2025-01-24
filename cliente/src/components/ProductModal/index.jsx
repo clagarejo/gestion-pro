@@ -1,26 +1,26 @@
 import { useState, useEffect } from 'react';
-import './styles.scss'
+import './styles.scss';
+import { useProductStore } from '@/store/useProductStore';
 
 export const ProductModal = ({ product, onClose }) => {
-    // Inicializamos los datos del producto si existe (si estamos editando un producto)
     const [formData, setFormData] = useState({
-        name: product?.name || '',
-        category: product?.category || '',
-        price: product?.price || '',
-        stock: product?.stock || ''
+        name: '',
+        category: '',
+        price: '',
+        stock: ''
     });
 
-    // Efecto para rellenar los campos con el producto al abrir el modal en modo edición
+    const { addProduct, updateProduct } = useProductStore();
+
     useEffect(() => {
         if (product) {
             setFormData({
-                name: product.name,
-                category: product.category,
-                price: product.price,
-                stock: product.stock
+                name: product.product.name || '',
+                category: product.product.category || '',
+                price: product.product.price || '',
+                stock: product.product.stock || ''
             });
         } else {
-            // Si no hay producto, vaciamos el formulario
             setFormData({
                 name: '',
                 category: '',
@@ -28,18 +28,31 @@ export const ProductModal = ({ product, onClose }) => {
                 stock: ''
             });
         }
-    }, [product]);
+    }, [product]);  
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Aquí podrías enviar los datos del formulario (crear o editar)
-        console.log(product ? 'Producto editado:' : 'Producto creado:', formData);
-        onClose();
+
+        try {
+            if (product) {
+                // Si estamos editando, actualizamos el producto en el store
+                updateProduct(product.product._id, formData);
+                console.log('Producto actualizado:', formData);
+            } else {
+                // Si no estamos editando, agregamos un nuevo producto al store
+                addProduct(formData);
+                console.log('Producto creado:', formData);
+            }
+
+            onClose();  // Cierra el modal
+        } catch (error) {
+            console.error('Error al crear o actualizar el producto:', error);
+        }
     };
 
     return (
