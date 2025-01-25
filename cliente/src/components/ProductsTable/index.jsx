@@ -1,4 +1,4 @@
-import { FaPlus, FaTrash } from 'react-icons/fa';
+import { FaCloudUploadAlt, FaPlus, FaTrash } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { ProductModal } from '../ProductModal';
 import { Product } from '../Product';
@@ -53,16 +53,16 @@ export const ProductsTable = () => {
     };
 
     const handleMassiveDeleteProducts = () => {
-        deleteSelectedProducts(selected)
-    }
+        deleteSelectedProducts(selected);
+    };
 
     return (
         <div className="container">
-            <header>
-                <h1> Gestión Pro </h1>
+            <header className="container_header">
+                <h1>Gestión Pro</h1>
+                <DarkModeToggle />
             </header>
 
-            <DarkModeToggle />
             <div className="container_bottom">
                 <input
                     className="search-products"
@@ -71,20 +71,18 @@ export const ProductsTable = () => {
                     value={searchTerm}
                     onChange={handleSearchChange}
                 />
-                <div>
-                    <button onClick={() => handleOpenModal()}>
+                <div className="action-buttons">
+                    <button onClick={() => handleOpenModal()} className="massive-upload">
+                        <FaCloudUploadAlt /> Cargar productos
+                    </button>
+                    <button onClick={() => handleOpenModal()} className="add_product">
                         <FaPlus style={{ marginRight: '10px' }} /> Crear producto
                     </button>
-                    
-                    {
-                        selected.length >= 1 && (
-
-                            <button onClick={handleMassiveDeleteProducts} className="masive_delete">
-                                <FaTrash style={{ marginRight: '10px' }} /> Eliminar productos
-                            </button>
-
-                        )
-                    }
+                    {selected.length >= 1 && (
+                        <button onClick={handleMassiveDeleteProducts} className="masive-delete">
+                            <FaTrash style={{ marginRight: '10px' }} /> Eliminar productos
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -94,11 +92,9 @@ export const ProductsTable = () => {
                         <th>Sel. todo</th>
                         <th>Nombre del Producto</th>
                         <th>Categoría</th>
-                        <th className="aling-text">Precio</th>
-                        <th className="aling-text">Cantidad en Stock</th>
-                        {products.length > 0 && (
-                            <th className="aling-text">Opciones</th>
-                        )}
+                        <th>Precio</th>
+                        <th>Cantidad en Stock</th>
+                        {products.length > 0 && <th>Opciones</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -132,12 +128,7 @@ export const ProductsTable = () => {
                 ))}
             </div>
 
-            {isModalOpen && (
-                <ProductModal
-                    product={productToEdit}
-                    onClose={handleCloseModal}
-                />
-            )}
+            {isModalOpen && <ProductModal product={productToEdit} onClose={handleCloseModal} />}
         </div>
     );
 };

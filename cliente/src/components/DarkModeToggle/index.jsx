@@ -19,7 +19,7 @@ export const DarkModeToggle = () => {
 
     return (
         <button className="theme-toggle" onClick={toggleTheme}>
-            {isDarkMode ? "🌙  Dark Mode" : "☀️ Light Mode"}
+            {isDarkMode ? "🌙 " : "☀️ "}
         </button>
     );
 };

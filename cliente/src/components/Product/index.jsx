@@ -34,8 +34,8 @@ export const Product = ({ product, handleOpenModal }) => {
             </td>
             <td>{name}</td>
             <td>{category}</td>
-            <td className="aling-text">{formatPrice(price)}(COP)</td>
-            <td className="aling-text">{stock}</td>
+            <td>{formatPrice(price)}(COP)</td>
+            <td>{stock}</td>
             {product && (
                 <td className="tr-options">
                     <button
