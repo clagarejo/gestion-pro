@@ -4,7 +4,7 @@
 .tr-options {
     display: flex;
     justify-content: center;
-    
+
     .button-options {
         padding: 5px 10px;
         color: white;
@@ -22,7 +22,7 @@
         &:hover {
             background-color: variables.$edit-bottom-hover;
         }
-    
+
         &:focus {
             outline: none;
         }
@@ -35,7 +35,7 @@
         &:hover {
             background-color: variables.$delete-bottom-hover;
         }
-    
+
         &:focus {
             outline: none;
         }

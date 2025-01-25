@@ -6,6 +6,7 @@ export const useProductStore = create((set) => ({
     products: [],
     loading: false,
     error: null,
+    selected: [],
 
     // Función para cargar productos
     fetchProducts: async () => {
@@ -27,23 +28,30 @@ export const useProductStore = create((set) => ({
     },
 
     // Función para agregar un producto
-    addProduct: async (productData) => {
+    addProduct: async (newProduct) => {
         try {
-            const response = await productsApi.post('/', productData);
-            set((state) => ({ products: [...state.products, response.data] }));
+            const productWithSelection = { ...newProduct, isSelected: false };
+            const response = await productsApi.post('/', productWithSelection);
+            const createdProduct = response.data;
+
+            set((state) => ({
+                products: [...state.products, createdProduct],
+            }));
+
             Swal.fire({
-                title: 'Producto creado',
-                text: 'El nuevo producto ha sido agregado correctamente.',
-                icon: 'success',
-                confirmButtonText: 'Aceptar'
+                title: "Producto agregado",
+                text: "El producto se ha agregado correctamente.",
+                icon: "success",
+                confirmButtonText: "Aceptar",
             });
         } catch (error) {
-            set({ error: 'Error al crear el producto' });
+            console.error("Error agregando el producto:", error);
+
             Swal.fire({
-                title: 'Error',
-                text: 'Hubo un problema al crear el producto. Por favor, intenta nuevamente.',
-                icon: 'error',
-                confirmButtonText: 'Aceptar'
+                title: "Error",
+                text: "Hubo un problema al agregar el producto. Por favor, intenta nuevamente.",
+                icon: "error",
+                confirmButtonText: "Aceptar",
             });
         }
     },
@@ -113,6 +121,76 @@ export const useProductStore = create((set) => ({
         }
     },
 
+    // Funcion para añadir los id al selected
+    toggleProductSelection: (productId) => {
+        set((state) => {
+            const isSelected = state.selected.includes(productId);
+            const updatedSelected = isSelected
+                ? state.selected.filter((id) => id !== productId)
+                : [...state.selected, productId];
+
+            console.log(updatedSelected, 'los que se añaden')
+            return { selected: updatedSelected };
+        });
+    },
+
+    // Función para eliminar los productos seleccionados
+    deleteSelectedProducts: async (ids) => {
+        try {
+            console.log(ids, 'a ver cuantos hay');
+            if (ids.length === 0) {
+                Swal.fire({
+                    title: 'No hay productos seleccionados',
+                    text: 'Por favor, selecciona productos para eliminar.',
+                    icon: 'warning',
+                    confirmButtonText: 'Aceptar',
+                });
+                return;
+            }
+
+            const result = await Swal.fire({
+                title: "¿Estás seguro?",
+                text: "Si eliminas estos productos no podrás recuperarlos.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "No, cancelar"
+            });
+
+            if (result.isConfirmed) {
+                // Eliminar los productos de la base de datos usando los ids pasados como parámetro
+                await Promise.all(
+                    ids.map((productId) =>
+                        productsApi.delete(`/${productId}`)
+                    )
+                );
+
+                set((state) => ({
+                    products: state.products.filter((product) =>
+                        !ids.includes(product._id)  // Filtrar los productos eliminados
+                    ),
+                    selected: []  // Limpiar el array de productos seleccionados
+                }));
+
+                Swal.fire({
+                    title: 'Productos eliminados',
+                    text: 'Los productos seleccionados han sido eliminados correctamente.',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        } catch (error) {
+            set({ error: 'Error al eliminar los productos' });
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un problema al eliminar los productos. Por favor, intenta nuevamente.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+        }
+    },
 
     //Funcion para buscar productos
     searchProductsByName: (name) => {

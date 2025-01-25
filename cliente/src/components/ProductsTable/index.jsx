@@ -1,4 +1,4 @@
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaTrash } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { ProductModal } from '../ProductModal';
 import { Product } from '../Product';
@@ -12,9 +12,9 @@ export const ProductsTable = () => {
     const [productToEdit, setProductToEdit] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-    const { products, fetchProducts, deleteProduct, searchProductsByName, loading } = useProductStore();
+    const { products, fetchProducts, searchProductsByName, selected, deleteSelectedProducts } = useProductStore();
 
-    const itemsPerPage = 5;
+    const itemsPerPage = 6;
 
     useEffect(() => {
         fetchProducts();
@@ -48,16 +48,20 @@ export const ProductsTable = () => {
         setCurrentPage(page);
     };
 
-    const handleDeleteProduct = (productId) => {
-        deleteProduct(productId);
-    };
-
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
 
+    const handleMassiveDeleteProducts = () => {
+        deleteSelectedProducts(selected)
+    }
+
     return (
         <div className="container">
+            <header>
+                <h1> Gestión Pro </h1>
+
+            </header>
             <DarkModeToggle />
             <div className="container_bottom">
                 <input
@@ -67,23 +71,32 @@ export const ProductsTable = () => {
                     value={searchTerm}
                     onChange={handleSearchChange}
                 />
-                <button onClick={() => handleOpenModal()}>
-                    <FaPlus style={{ marginRight: '10px' }} /> Crear producto
-                </button>
+                <div>
+                    <button onClick={() => handleOpenModal()}>
+                        <FaPlus style={{ marginRight: '10px' }} /> Crear producto
+                    </button>
+
+                    <button onClick={handleMassiveDeleteProducts} className="masive_delete">
+                        <FaTrash style={{ marginRight: '10px' }} /> Eliminar productos
+                    </button>
+                </div>
             </div>
 
             <table className="table">
                 <thead>
                     <tr>
+                        <th>Sel. todo</th>
                         <th>Nombre del Producto</th>
                         <th>Categoría</th>
                         <th className="aling-text">Precio</th>
                         <th className="aling-text">Cantidad en Stock</th>
-                        <th className="aling-text">Opciones</th>
+                        {products.length > 0 && (
+                            <th className="aling-text">Opciones</th>
+                        )}
                     </tr>
                 </thead>
                 <tbody>
-                    { paginatedProducts.length === 0 ? (
+                    {paginatedProducts.length === 0 ? (
                         <tr>
                             <td colSpan="5" className="no-products">
                                 No hay productos para mostrar, crea uno.
@@ -95,7 +108,6 @@ export const ProductsTable = () => {
                                 key={product._id || index}
                                 product={product}
                                 handleOpenModal={handleOpenModal}
-                                handleDeleteProduct={handleDeleteProduct}
                             />
                         ))
                     )}

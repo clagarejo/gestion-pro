@@ -71,11 +71,9 @@ export const ProductModal = ({ product, onClose }) => {
             if (product) {
                 // Si estamos editando, actualizamos el producto en el store
                 updateProduct(product.product._id, formData);
-                Swal.fire('Éxito', 'Producto actualizado correctamente.', 'success');
             } else {
                 // Si no estamos editando, agregamos un nuevo producto al store
                 addProduct(formData);
-                Swal.fire('Éxito', 'Producto creado correctamente.', 'success');
             }
 
             onClose(); // Cierra el modal

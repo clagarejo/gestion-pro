@@ -16,6 +16,10 @@ const productSchema = new mongoose.Schema({
     stock: {
         type: Number,
         required: true
+    },
+    isSelected: {
+        type: Boolean,
+        required: true
     }
 });
 
