@@ -149,11 +149,9 @@ export const useProductStore = create((set) => ({
         });
     },
 
-
     // Función para eliminar los productos seleccionados
     deleteSelectedProducts: async (ids) => {
         try {
-            console.log(ids, 'a ver cuantos hay');
             if (ids.length === 0) {
                 Swal.fire({
                     title: 'No hay productos seleccionados',
@@ -224,47 +222,56 @@ export const useProductStore = create((set) => ({
         reader.onload = async () => {
             try {
                 const data = JSON.parse(reader.result);
-                // Asegurarse de que los datos son un array y agregar el campo `isSelected` como false
+
+                // Verificar que los datos son un array
+                if (!Array.isArray(data)) {
+                    throw new Error('El archivo debe contener un array de productos.');
+                }
+
+                // Asegurarse de que los datos sean válidos y agregar el campo `isSelected` como false
                 const processedProducts = data.map((product) => ({
                     ...product,
                     isSelected: false,
                 }));
 
-                // Guardar los productos procesados en la base de datos
+                // Enviar todos los productos a la base de datos en paralelo (mejora de rendimiento)
                 await Promise.all(
-                    processedProducts.map(async (product) => {
-                        await productsApi.post('/', product);  // Guardamos cada producto individualmente
-                    })
+                    processedProducts.map((product) => productsApi.post('/', product))
                 );
 
+                // Actualizar el estado de los productos
                 set((state) => ({
-                    products: [...state.products, ...processedProducts],  // Actualizamos el estado de los productos
+                    products: [...state.products, ...processedProducts],
                 }));
 
                 Swal.fire({
                     title: 'Productos cargados',
                     text: 'Los productos del archivo se han agregado correctamente.',
                     icon: 'success',
-                    confirmButtonText: 'Aceptar'
+                    confirmButtonText: 'Aceptar',
                 });
             } catch (error) {
-                console.error("Error al procesar el archivo:", error);
+                console.error('Error al procesar el archivo:', error);
+
                 Swal.fire({
                     title: 'Error',
-                    text: 'Hubo un problema al procesar el archivo. Asegúrate de que el archivo es válido.',
+                    text: error.message || 'Hubo un problema al procesar el archivo. Asegúrate de que el archivo es válido.',
                     icon: 'error',
-                    confirmButtonText: 'Aceptar'
+                    confirmButtonText: 'Aceptar',
                 });
+            } finally {
+                // Aquí podrías hacer cualquier limpieza o restablecer el estado si fuera necesario.
+                // Ejemplo: setLoading(false);
             }
         };
 
         reader.onerror = (error) => {
-            console.error("Error leyendo el archivo:", error);
+            console.error('Error leyendo el archivo:', error);
             Swal.fire({
                 title: 'Error',
                 text: 'Hubo un problema al leer el archivo.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                confirmButtonText: 'Aceptar',
             });
         };
 
