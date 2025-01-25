@@ -122,17 +122,33 @@ export const useProductStore = create((set) => ({
     },
 
     // Funcion para añadir los id al selected
-    toggleProductSelection: (productId) => {
+    toggleProductSelection: (productIds) => {
         set((state) => {
-            const isSelected = state.selected.includes(productId);
-            const updatedSelected = isSelected
-                ? state.selected.filter((id) => id !== productId)
-                : [...state.selected, productId];
+            let updatedSelected = [...state.selected];
 
-            console.log(updatedSelected, 'los que se añaden')
+            if (Array.isArray(productIds)) {
+                // Si `productIds` es un array, seleccionamos o deseleccionamos todos
+                const allSelected = productIds.every((id) => state.selected.includes(id));
+
+                if (allSelected) {
+                    // Si todos ya están seleccionados, deseleccionamos todos
+                    updatedSelected = state.selected.filter((id) => !productIds.includes(id));
+                } else {
+                    // Si no todos están seleccionados, seleccionamos todos
+                    updatedSelected = [...new Set([...state.selected, ...productIds])];
+                }
+            } else {
+                // Si `productIds` es un único ID, seleccionamos o deseleccionamos el producto
+                const isSelected = state.selected.includes(productIds);
+                updatedSelected = isSelected
+                    ? state.selected.filter((id) => id !== productIds)
+                    : [...state.selected, productIds];
+            }
+
             return { selected: updatedSelected };
         });
     },
+
 
     // Función para eliminar los productos seleccionados
     deleteSelectedProducts: async (ids) => {
@@ -192,13 +208,67 @@ export const useProductStore = create((set) => ({
         }
     },
 
-    //Funcion para buscar productos
+    // Funcion para buscar productos
     searchProductsByName: (name) => {
         set((state) => ({
             products: state.products.filter((product) =>
                 product.name.toLowerCase().includes(name.toLowerCase())
             ),
         }));
+    },
+
+    // Función para procesar archivo .json
+    processJsonFile: async (file) => {
+        const reader = new FileReader();
+
+        reader.onload = async () => {
+            try {
+                const data = JSON.parse(reader.result);
+                // Asegurarse de que los datos son un array y agregar el campo `isSelected` como false
+                const processedProducts = data.map((product) => ({
+                    ...product,
+                    isSelected: false,
+                }));
+
+                // Guardar los productos procesados en la base de datos
+                await Promise.all(
+                    processedProducts.map(async (product) => {
+                        await productsApi.post('/', product);  // Guardamos cada producto individualmente
+                    })
+                );
+
+                set((state) => ({
+                    products: [...state.products, ...processedProducts],  // Actualizamos el estado de los productos
+                }));
+
+                Swal.fire({
+                    title: 'Productos cargados',
+                    text: 'Los productos del archivo se han agregado correctamente.',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
+            } catch (error) {
+                console.error("Error al procesar el archivo:", error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Hubo un problema al procesar el archivo. Asegúrate de que el archivo es válido.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        };
+
+        reader.onerror = (error) => {
+            console.error("Error leyendo el archivo:", error);
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un problema al leer el archivo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+        };
+
+        reader.readAsText(file);
     },
 
 }));

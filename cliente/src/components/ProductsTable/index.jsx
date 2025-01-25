@@ -1,9 +1,10 @@
 import { FaCloudUploadAlt, FaPlus, FaTrash } from 'react-icons/fa';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ProductModal } from '../ProductModal';
 import { Product } from '../Product';
 import { useProductStore } from '@/store/useProductStore';
 import { DarkModeToggle } from '../DarkModeToggle';
+import { Spinner } from '../Spinner';
 
 import './styles.scss';
 
@@ -12,12 +13,30 @@ export const ProductsTable = () => {
     const [productToEdit, setProductToEdit] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-    const { products, fetchProducts, searchProductsByName, selected, deleteSelectedProducts } = useProductStore();
+    const [loading, setLoading] = useState(false);
+    const {
+        products,
+        fetchProducts,
+        searchProductsByName,
+        selected,
+        deleteSelectedProducts,
+        processJsonFile,
+        toggleProductSelection 
+    } = useProductStore();
+
+    const fileInputRef = useRef(null);
 
     const itemsPerPage = 6;
 
     useEffect(() => {
-        fetchProducts();
+        const fetchData = async () => {
+            setLoading(true);
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            await fetchProducts();
+            setLoading(false);
+        };
+
+        fetchData();
     }, [fetchProducts]);
 
     useEffect(() => {
@@ -50,10 +69,35 @@ export const ProductsTable = () => {
 
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
+
+    };
+
+    const handleSelectAllChange = () => {
+        if (selected.length === products.length) {
+            toggleProductSelection([]);
+        } else {
+            const allProductIds = products.map((product) => product._id);
+            toggleProductSelection(allProductIds);
+        }
     };
 
     const handleMassiveDeleteProducts = () => {
         deleteSelectedProducts(selected);
+    };
+
+    const handleFileUploadClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            console.log('Archivo seleccionado:', file.name);
+            setLoading(true);
+            new Promise(resolve => setTimeout(resolve, 3000))
+                .then(() => processJsonFile(file))
+                .finally(() => setLoading(false));
+        }
     };
 
     return (
@@ -72,9 +116,15 @@ export const ProductsTable = () => {
                     onChange={handleSearchChange}
                 />
                 <div className="action-buttons">
-                    <button onClick={() => handleOpenModal()} className="massive-upload">
+                    <button onClick={handleFileUploadClick} className="massive-upload">
                         <FaCloudUploadAlt /> Cargar productos
                     </button>
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        style={{ display: 'none' }} // Oculta el input
+                        onChange={handleFileChange}
+                    />
                     <button onClick={() => handleOpenModal()} className="add_product">
                         <FaPlus style={{ marginRight: '10px' }} /> Crear producto
                     </button>
@@ -86,10 +136,18 @@ export const ProductsTable = () => {
                 </div>
             </div>
 
+            {loading && <Spinner />} {/* Muestra el spinner si `loading` es true */}
+
             <table className="table">
                 <thead>
                     <tr>
-                        <th>Sel. todo</th>
+                        <th>
+                            <input
+                                type="checkbox"
+                                checked={selected.length === products.length} // Si el número de seleccionados es igual al total, se marca el checkbox
+                                onChange={handleSelectAllChange}
+                            />
+                        </th>
                         <th>Nombre del Producto</th>
                         <th>Categoría</th>
                         <th>Precio</th>
