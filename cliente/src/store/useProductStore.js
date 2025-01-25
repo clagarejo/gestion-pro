@@ -6,6 +6,7 @@ export const useProductStore = create((set) => ({
     products: [],
     loading: false,
     error: null,
+    selected: [],
 
     // Función para cargar productos
     fetchProducts: async () => {
@@ -27,23 +28,30 @@ export const useProductStore = create((set) => ({
     },
 
     // Función para agregar un producto
-    addProduct: async (productData) => {
+    addProduct: async (newProduct) => {
         try {
-            const response = await productsApi.post('/', productData);
-            set((state) => ({ products: [...state.products, response.data] }));
+            const productWithSelection = { ...newProduct, isSelected: false };
+            const response = await productsApi.post('/', productWithSelection);
+            const createdProduct = response.data;
+
+            set((state) => ({
+                products: [...state.products, createdProduct],
+            }));
+
             Swal.fire({
-                title: 'Producto creado',
-                text: 'El nuevo producto ha sido agregado correctamente.',
-                icon: 'success',
-                confirmButtonText: 'Aceptar'
+                title: "Producto agregado",
+                text: "El producto se ha agregado correctamente.",
+                icon: "success",
+                confirmButtonText: "Aceptar",
             });
         } catch (error) {
-            set({ error: 'Error al crear el producto' });
+            console.error("Error agregando el producto:", error);
+
             Swal.fire({
-                title: 'Error',
-                text: 'Hubo un problema al crear el producto. Por favor, intenta nuevamente.',
-                icon: 'error',
-                confirmButtonText: 'Aceptar'
+                title: "Error",
+                text: "Hubo un problema al agregar el producto. Por favor, intenta nuevamente.",
+                icon: "error",
+                confirmButtonText: "Aceptar",
             });
         }
     },
@@ -113,14 +121,161 @@ export const useProductStore = create((set) => ({
         }
     },
 
+    // Funcion para añadir los id al selected
+    toggleProductSelection: (productIds) => {
+        set((state) => {
+            let updatedSelected = [...state.selected];
 
-    //Funcion para buscar productos
+            if (Array.isArray(productIds)) {
+                // Si `productIds` es un array, seleccionamos o deseleccionamos todos
+                const allSelected = productIds.every((id) => state.selected.includes(id));
+
+                if (allSelected) {
+                    // Si todos ya están seleccionados, deseleccionamos todos
+                    updatedSelected = state.selected.filter((id) => !productIds.includes(id));
+                } else {
+                    // Si no todos están seleccionados, seleccionamos todos
+                    updatedSelected = [...new Set([...state.selected, ...productIds])];
+                }
+            } else {
+                // Si `productIds` es un único ID, seleccionamos o deseleccionamos el producto
+                const isSelected = state.selected.includes(productIds);
+                updatedSelected = isSelected
+                    ? state.selected.filter((id) => id !== productIds)
+                    : [...state.selected, productIds];
+            }
+
+            return { selected: updatedSelected };
+        });
+    },
+
+    // Función para eliminar los productos seleccionados
+    deleteSelectedProducts: async (ids) => {
+        try {
+            if (ids.length === 0) {
+                Swal.fire({
+                    title: 'No hay productos seleccionados',
+                    text: 'Por favor, selecciona productos para eliminar.',
+                    icon: 'warning',
+                    confirmButtonText: 'Aceptar',
+                });
+                return;
+            }
+
+            const result = await Swal.fire({
+                title: "¿Estás seguro?",
+                text: "Si eliminas estos productos no podrás recuperarlos.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "No, cancelar"
+            });
+
+            if (result.isConfirmed) {
+                // Eliminar los productos de la base de datos usando los ids pasados como parámetro
+                await Promise.all(
+                    ids.map((productId) =>
+                        productsApi.delete(`/${productId}`)
+                    )
+                );
+
+                set((state) => ({
+                    products: state.products.filter((product) =>
+                        !ids.includes(product._id)  // Filtrar los productos eliminados
+                    ),
+                    selected: []  // Limpiar el array de productos seleccionados
+                }));
+
+                Swal.fire({
+                    title: 'Productos eliminados',
+                    text: 'Los productos seleccionados han sido eliminados correctamente.',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        } catch (error) {
+            set({ error: 'Error al eliminar los productos' });
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un problema al eliminar los productos. Por favor, intenta nuevamente.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+        }
+    },
+
+    // Funcion para buscar productos
     searchProductsByName: (name) => {
         set((state) => ({
             products: state.products.filter((product) =>
                 product.name.toLowerCase().includes(name.toLowerCase())
             ),
         }));
+    },
+
+    // Función para procesar archivo .json
+    processJsonFile: async (file) => {
+        const reader = new FileReader();
+
+        reader.onload = async () => {
+            try {
+                const data = JSON.parse(reader.result);
+
+                // Verificar que los datos son un array
+                if (!Array.isArray(data)) {
+                    throw new Error('El archivo debe contener un array de productos.');
+                }
+
+                // Asegurarse de que los datos sean válidos y agregar el campo `isSelected` como false
+                const processedProducts = data.map((product) => ({
+                    ...product,
+                    isSelected: false,
+                }));
+
+                // Enviar todos los productos a la base de datos en paralelo (mejora de rendimiento)
+                await Promise.all(
+                    processedProducts.map((product) => productsApi.post('/', product))
+                );
+
+                // Actualizar el estado de los productos
+                set((state) => ({
+                    products: [...state.products, ...processedProducts],
+                }));
+
+                Swal.fire({
+                    title: 'Productos cargados',
+                    text: 'Los productos del archivo se han agregado correctamente.',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar',
+                });
+            } catch (error) {
+                console.error('Error al procesar el archivo:', error);
+
+                Swal.fire({
+                    title: 'Error',
+                    text: error.message || 'Hubo un problema al procesar el archivo. Asegúrate de que el archivo es válido.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar',
+                });
+            } finally {
+                // Aquí podrías hacer cualquier limpieza o restablecer el estado si fuera necesario.
+                // Ejemplo: setLoading(false);
+            }
+        };
+
+        reader.onerror = (error) => {
+            console.error('Error leyendo el archivo:', error);
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un problema al leer el archivo.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar',
+            });
+        };
+
+        reader.readAsText(file);
     },
 
 }));

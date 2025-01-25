@@ -11,13 +11,13 @@ const getProducts = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
-    const { name, category, price, stock } = req.body;
+    const { name, category, price, stock, isSelected } = req.body;
     if (!name || !category || !price || !stock) {
         return res.status(400).json({ error: "Todos los campos son requeridos" });
     }
 
     try {
-        const newProduct = new Product({ name, category, price, stock });
+        const newProduct = new Product({ name, category, price, stock, isSelected });
         await newProduct.save();
         res.status(201).json(newProduct); // Devuelve el producto creado
     } catch (error) {
