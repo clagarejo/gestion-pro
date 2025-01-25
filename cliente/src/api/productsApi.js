@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const apiURL = "http://localhost:4000/api/products";
+// const apiURL = "http://localhost:4000/api/products";
 
-// const apiURL = "https://getion-pro.fly.dev/api/products";
+const apiURL = "https://getion-pro.fly.dev/api/products";
 
 const productsApi = axios.create({
     baseURL: apiURL,
