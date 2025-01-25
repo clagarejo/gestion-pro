@@ -60,8 +60,8 @@ export const ProductsTable = () => {
         <div className="container">
             <header>
                 <h1> Gestión Pro </h1>
-
             </header>
+
             <DarkModeToggle />
             <div className="container_bottom">
                 <input
@@ -75,10 +75,16 @@ export const ProductsTable = () => {
                     <button onClick={() => handleOpenModal()}>
                         <FaPlus style={{ marginRight: '10px' }} /> Crear producto
                     </button>
+                    
+                    {
+                        selected.length >= 1 && (
 
-                    <button onClick={handleMassiveDeleteProducts} className="masive_delete">
-                        <FaTrash style={{ marginRight: '10px' }} /> Eliminar productos
-                    </button>
+                            <button onClick={handleMassiveDeleteProducts} className="masive_delete">
+                                <FaTrash style={{ marginRight: '10px' }} /> Eliminar productos
+                            </button>
+
+                        )
+                    }
                 </div>
             </div>
 
