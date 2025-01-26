@@ -8,7 +8,6 @@ export const useProductStore = create((set) => ({
     error: null,
     selected: [],
 
-    // Función para cargar productos
     fetchProducts: async () => {
         try {
             set({ loading: true });
@@ -20,16 +19,16 @@ export const useProductStore = create((set) => ({
                 title: 'Error',
                 text: 'Hubo un problema al cargar los productos.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                confirmButtonText: 'Aceptar',
             });
         } finally {
             set({ loading: false });
         }
     },
 
-    // Función para agregar un producto
     addProduct: async (newProduct) => {
         try {
+            set({ loading: true });
             const productWithSelection = { ...newProduct, isSelected: false };
             const response = await productsApi.post('/', productWithSelection);
             const createdProduct = response.data;
@@ -39,26 +38,26 @@ export const useProductStore = create((set) => ({
             }));
 
             Swal.fire({
-                title: "Producto agregado",
-                text: "El producto se ha agregado correctamente.",
-                icon: "success",
-                confirmButtonText: "Aceptar",
+                title: 'Producto agregado',
+                text: 'El producto se ha agregado correctamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
             });
         } catch (error) {
-            console.error("Error agregando el producto:", error);
-
             Swal.fire({
-                title: "Error",
-                text: "Hubo un problema al agregar el producto. Por favor, intenta nuevamente.",
-                icon: "error",
-                confirmButtonText: "Aceptar",
+                title: 'Error',
+                text: 'Hubo un problema al agregar el producto. Por favor, intenta nuevamente.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar',
             });
+        } finally {
+            set({ loading: false });
         }
     },
 
-    // Función para actualizar un producto
     updateProduct: async (id, productData) => {
         try {
+            set({ loading: true });
             const response = await productsApi.put(`/${id}`, productData);
             set((state) => ({
                 products: state.products.map((product) =>
@@ -69,7 +68,7 @@ export const useProductStore = create((set) => ({
                 title: 'Producto actualizado',
                 text: 'Los cambios del producto se han guardado correctamente.',
                 icon: 'success',
-                confirmButtonText: 'Aceptar'
+                confirmButtonText: 'Aceptar',
             });
         } catch (error) {
             set({ error: 'Error al actualizar el producto' });
@@ -77,28 +76,29 @@ export const useProductStore = create((set) => ({
                 title: 'Error',
                 text: 'Hubo un problema al actualizar el producto. Por favor, intenta nuevamente.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                confirmButtonText: 'Aceptar',
             });
+        } finally {
+            set({ loading: false });
         }
     },
 
-    // Función para eliminar un producto
     deleteProduct: async (id) => {
         try {
             const result = await Swal.fire({
-                title: "¿Estás seguro?",
-                text: "Si eliminas este producto no volveras a verlo",
-                icon: "warning",
+                title: '¿Estás seguro?',
+                text: 'Si eliminas este producto no volverás a verlo.',
+                icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Si, eliminar",
-                cancelButtonText: "No, cancelar"
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'No, cancelar',
             });
 
             if (result.isConfirmed) {
+                set({ loading: true });
                 await productsApi.delete(`/${id}`);
-
                 set((state) => ({
                     products: state.products.filter((product) => product._id !== id),
                 }));
@@ -107,7 +107,7 @@ export const useProductStore = create((set) => ({
                     title: 'Producto eliminado',
                     text: 'El producto ha sido eliminado correctamente.',
                     icon: 'success',
-                    confirmButtonText: 'Aceptar'
+                    confirmButtonText: 'Aceptar',
                 });
             }
         } catch (error) {
@@ -116,97 +116,13 @@ export const useProductStore = create((set) => ({
                 title: 'Error',
                 text: 'Hubo un problema al eliminar el producto. Por favor, intenta nuevamente.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                confirmButtonText: 'Aceptar',
             });
+        } finally {
+            set({ loading: false });
         }
     },
 
-    // Funcion para añadir los id al selected
-    toggleProductSelection: (productIds) => {
-        set((state) => {
-            let updatedSelected = [...state.selected];
-
-            if (Array.isArray(productIds)) {
-                // Si `productIds` es un array, seleccionamos o deseleccionamos todos
-                const allSelected = productIds.every((id) => state.selected.includes(id));
-
-                if (allSelected) {
-                    // Si todos ya están seleccionados, deseleccionamos todos
-                    updatedSelected = state.selected.filter((id) => !productIds.includes(id));
-                } else {
-                    // Si no todos están seleccionados, seleccionamos todos
-                    updatedSelected = [...new Set([...state.selected, ...productIds])];
-                }
-            } else {
-                // Si `productIds` es un único ID, seleccionamos o deseleccionamos el producto
-                const isSelected = state.selected.includes(productIds);
-                updatedSelected = isSelected
-                    ? state.selected.filter((id) => id !== productIds)
-                    : [...state.selected, productIds];
-            }
-
-            return { selected: updatedSelected };
-        });
-    },
-
-    // Función para eliminar los productos seleccionados
-    deleteSelectedProducts: async (ids) => {
-        try {
-            if (ids.length === 0) {
-                Swal.fire({
-                    title: 'No hay productos seleccionados',
-                    text: 'Por favor, selecciona productos para eliminar.',
-                    icon: 'warning',
-                    confirmButtonText: 'Aceptar',
-                });
-                return;
-            }
-
-            const result = await Swal.fire({
-                title: "¿Estás seguro?",
-                text: "Si eliminas estos productos no podrás recuperarlos.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sí, eliminar",
-                cancelButtonText: "No, cancelar"
-            });
-
-            if (result.isConfirmed) {
-                // Eliminar los productos de la base de datos usando los ids pasados como parámetro
-                await Promise.all(
-                    ids.map((productId) =>
-                        productsApi.delete(`/${productId}`)
-                    )
-                );
-
-                set((state) => ({
-                    products: state.products.filter((product) =>
-                        !ids.includes(product._id)  // Filtrar los productos eliminados
-                    ),
-                    selected: []  // Limpiar el array de productos seleccionados
-                }));
-
-                Swal.fire({
-                    title: 'Productos eliminados',
-                    text: 'Los productos seleccionados han sido eliminados correctamente.',
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar'
-                });
-            }
-        } catch (error) {
-            set({ error: 'Error al eliminar los productos' });
-            Swal.fire({
-                title: 'Error',
-                text: 'Hubo un problema al eliminar los productos. Por favor, intenta nuevamente.',
-                icon: 'error',
-                confirmButtonText: 'Aceptar'
-            });
-        }
-    },
-
-    // Funcion para buscar productos
     searchProductsByName: (name) => {
         set((state) => ({
             products: state.products.filter((product) =>
@@ -215,33 +131,34 @@ export const useProductStore = create((set) => ({
         }));
     },
 
-    // Función para procesar archivo .json
     processJsonFile: async (file) => {
         const reader = new FileReader();
 
         reader.onload = async () => {
             try {
                 const data = JSON.parse(reader.result);
-
-                // Verificar que los datos son un array
                 if (!Array.isArray(data)) {
                     throw new Error('El archivo debe contener un array de productos.');
                 }
 
-                // Asegurarse de que los datos sean válidos y agregar el campo `isSelected` como false
                 const processedProducts = data.map((product) => ({
                     ...product,
                     isSelected: false,
                 }));
 
-                // Enviar todos los productos a la base de datos en paralelo (mejora de rendimiento)
-                await Promise.all(
-                    processedProducts.map((product) => productsApi.post('/', product))
+                set({ loading: true });
+
+                // Espera a que se guarden todos los productos antes de actualizar el estado
+                const createdProducts = await Promise.all(
+                    processedProducts.map(async (product) => {
+                        const response = await productsApi.post('/', product);
+                        return response.data; // Asegúrate de que la respuesta contiene el producto con el ID
+                    })
                 );
 
-                // Actualizar el estado de los productos
+                // Una vez que los productos hayan sido creados, actualiza el estado con los datos correctos
                 set((state) => ({
-                    products: [...state.products, ...processedProducts],
+                    products: [...state.products, ...createdProducts],
                 }));
 
                 Swal.fire({
@@ -250,9 +167,8 @@ export const useProductStore = create((set) => ({
                     icon: 'success',
                     confirmButtonText: 'Aceptar',
                 });
-            } catch (error) {
-                console.error('Error al procesar el archivo:', error);
 
+            } catch (error) {
                 Swal.fire({
                     title: 'Error',
                     text: error.message || 'Hubo un problema al procesar el archivo. Asegúrate de que el archivo es válido.',
@@ -260,13 +176,11 @@ export const useProductStore = create((set) => ({
                     confirmButtonText: 'Aceptar',
                 });
             } finally {
-                // Aquí podrías hacer cualquier limpieza o restablecer el estado si fuera necesario.
-                // Ejemplo: setLoading(false);
+                set({ loading: false });
             }
         };
 
-        reader.onerror = (error) => {
-            console.error('Error leyendo el archivo:', error);
+        reader.onerror = () => {
             Swal.fire({
                 title: 'Error',
                 text: 'Hubo un problema al leer el archivo.',

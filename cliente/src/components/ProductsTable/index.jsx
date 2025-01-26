@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ProductModal } from '../ProductModal';
 import { Product } from '../Product';
 import { DarkModeToggle } from '../DarkModeToggle';
@@ -19,8 +19,6 @@ export const ProductsTable = () => {
         selected,
         loading,
         searchProducts,
-        handleSelectAllChange,
-        handleMassiveDeleteProducts,
         handleFileUpload
     } = useProducts();
 
@@ -53,6 +51,12 @@ export const ProductsTable = () => {
         searchProducts(e.target.value);
     };
 
+    useEffect(() => {
+        if (paginatedProducts.length === 0 && currentPage > 1) {
+            setCurrentPage(currentPage - 1); 
+        }
+    }, [products, currentPage, paginatedProducts.length]);
+
     return (
         <div className="container">
             <header className="container_header">
@@ -71,7 +75,6 @@ export const ProductsTable = () => {
                 <ActionButtons
                     handleFileUpload={handleFileUpload}
                     handleOpenModal={handleOpenModal}
-                    handleMassiveDeleteProducts={handleMassiveDeleteProducts}
                     fileInputRef={fileInputRef}
                     selected={selected}
                 />
@@ -82,13 +85,6 @@ export const ProductsTable = () => {
             <table className="table">
                 <thead>
                     <tr>
-                        <th>
-                            <input
-                                type="checkbox"
-                                checked={selected.length === products.length}
-                                onChange={handleSelectAllChange}
-                            />
-                        </th>
                         <th>Nombre del Producto</th>
                         <th>Categoría</th>
                         <th>Precio</th>
