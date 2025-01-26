@@ -19,7 +19,6 @@ export const ProductsTable = () => {
         selected,
         loading,
         searchProducts,
-        handleSelectAllChange,
         handleMassiveDeleteProducts,
         handleFileUpload
     } = useProducts();
@@ -82,13 +81,7 @@ export const ProductsTable = () => {
             <table className="table">
                 <thead>
                     <tr>
-                        <th>
-                            <input
-                                type="checkbox"
-                                checked={selected.length === products.length}
-                                onChange={handleSelectAllChange}
-                            />
-                        </th>
+                        <th> Elimina varios </th>
                         <th>Nombre del Producto</th>
                         <th>Categoría</th>
                         <th>Precio</th>

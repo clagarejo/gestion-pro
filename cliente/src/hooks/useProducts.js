@@ -10,7 +10,7 @@ export const useProducts = () => {
         selected,
         deleteSelectedProducts,
         processJsonFile,
-        toggleProductSelection
+        toggleProductSelection,
     } = useProductStore();
 
     useEffect(() => {
@@ -24,13 +24,11 @@ export const useProducts = () => {
     }, [fetchProducts]);
 
     const searchProducts = (searchTerm) => {
-        setLoading(true);
         if (searchTerm) {
             searchProductsByName(searchTerm);
         } else {
             fetchProducts();
         }
-        setLoading(false);
     };
 
     const handleSelectAllChange = () => {
@@ -38,23 +36,22 @@ export const useProducts = () => {
             toggleProductSelection([]);
         } else {
             const allProductIds = products.map((product) => product._id);
-            toggleProductSelection(allProductIds);
+            allProductIds.forEach((id) => toggleProductSelection(id));
         }
     };
 
     const handleMassiveDeleteProducts = () => {
+        setLoading(true)
         deleteSelectedProducts(selected);
+        setLoading(false)
+
     };
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
-
-        if (!file) {
-            console.error('No se ha seleccionado ningún archivo.');
-            return;
+        if (file) {
+            processJsonFile(file);
         }
-
-        processJsonFile(file);
     };
 
     return {
@@ -64,6 +61,6 @@ export const useProducts = () => {
         searchProducts,
         handleSelectAllChange,
         handleMassiveDeleteProducts,
-        handleFileUpload
+        handleFileUpload,
     };
 };
