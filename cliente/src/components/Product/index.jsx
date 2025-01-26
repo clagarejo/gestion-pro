@@ -1,3 +1,4 @@
+import React from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import './styles.scss';
 import { useProductStore } from '@/store/useProductStore';

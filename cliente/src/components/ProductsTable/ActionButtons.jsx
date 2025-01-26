@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { FaCloudUploadAlt, FaPlus, FaTrash } from 'react-icons/fa';
 
 export const ActionButtons = ({ handleFileUpload, handleOpenModal, handleMassiveDeleteProducts, fileInputRef, selected }) => {

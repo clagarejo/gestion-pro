@@ -1,3 +1,4 @@
+import React from 'react';
 import { useProductForm } from '@/hooks/useProductForm';
 import { ProductForm } from './ProductForm';
 import { useProductStore } from '@/store/useProductStore';

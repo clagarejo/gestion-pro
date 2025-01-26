@@ -1,3 +1,5 @@
+import React from "react";
+
 export const ProductForm = ({ formData, handleChange, handleSubmit }) => (
     <form onSubmit={handleSubmit}>
         <div className="form-group">
