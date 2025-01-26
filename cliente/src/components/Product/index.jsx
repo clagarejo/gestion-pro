@@ -3,13 +3,8 @@ import './styles.scss';
 import { useProductStore } from '@/store/useProductStore';
 
 export const Product = ({ product, handleOpenModal }) => {
-    const productId = product._id;
-    const { name, category, price, stock } = product;
-    const { selected, toggleProductSelection, deleteProduct } = useProductStore();
-
-    const handleCheckboxChange = () => {
-        toggleProductSelection(productId);
-    };
+    const { _id: productId, name, category, price, stock } = product;
+    const { deleteProduct } = useProductStore();
 
     const formatPrice = (price) => {
         return new Intl.NumberFormat('es-CO', {
@@ -20,18 +15,12 @@ export const Product = ({ product, handleOpenModal }) => {
     };
 
     const handleDeleteProduct = () => {
+        console.log(productId, 'al eliminar')
         deleteProduct(productId);
     };
 
     return (
         <tr>
-            <td>
-                <input
-                    type="checkbox"
-                    checked={selected.includes(productId)}
-                    onChange={handleCheckboxChange}
-                />
-            </td>
             <td>{name}</td>
             <td>{category}</td>
             <td>{formatPrice(price)}(COP)</td>

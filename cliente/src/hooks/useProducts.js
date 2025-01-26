@@ -8,9 +8,7 @@ export const useProducts = () => {
         fetchProducts,
         searchProductsByName,
         selected,
-        deleteSelectedProducts,
         processJsonFile,
-        toggleProductSelection,
     } = useProductStore();
 
     useEffect(() => {
@@ -31,22 +29,6 @@ export const useProducts = () => {
         }
     };
 
-    const handleSelectAllChange = () => {
-        if (selected.length === products.length) {
-            toggleProductSelection([]);
-        } else {
-            const allProductIds = products.map((product) => product._id);
-            allProductIds.forEach((id) => toggleProductSelection(id));
-        }
-    };
-
-    const handleMassiveDeleteProducts = () => {
-        setLoading(true)
-        deleteSelectedProducts(selected);
-        setLoading(false)
-
-    };
-
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -59,8 +41,6 @@ export const useProducts = () => {
         loading,
         selected,
         searchProducts,
-        handleSelectAllChange,
-        handleMassiveDeleteProducts,
         handleFileUpload,
     };
 };

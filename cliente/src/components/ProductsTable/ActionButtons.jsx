@@ -27,12 +27,6 @@ export const ActionButtons = ({ handleFileUpload, handleOpenModal, handleMassive
             <button onClick={() => handleOpenModal()} className="add_product">
                 <FaPlus style={{ marginRight: '10px' }} /> Crear producto
             </button>
-
-            {selected.length >= 2 && (
-                <button onClick={handleMassiveDeleteProducts} className="masive-delete">
-                    <FaTrash style={{ marginRight: '10px' }} /> Eliminar productos
-                </button>
-            )}
         </div>
     );
 };
