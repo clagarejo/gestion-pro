@@ -1,4 +1,4 @@
-# Monorepositorio `test-meli`
+# Monorepositorio `GestionPro`
 
 Este es un monorepositorio para manejar el desarrollo de una aplicación que incluye un backend y un frontend. A continuación, encontrarás información detallada sobre cómo configurar, ejecutar y contribuir al proyecto.
 
@@ -26,7 +26,7 @@ Asegúrate de tener instalados los siguientes componentes antes de trabajar con 
 
    ```bash
    git clone <URL_DEL_REPOSITORIO>
-   cd test-meli
+   cd gestionpro
    ```
 
 2. Instala las dependencias del proyecto:
@@ -41,11 +41,10 @@ Asegúrate de tener instalados los siguientes componentes antes de trabajar con 
      ```env
      REACT_APP_API_URL=http://localhost:4000/api
      ```
-   - **Backend**: Crea un archivo `.env` en la carpeta `servidor/` con las variables necesarias. Ejemplo:
+   - **Backend**: Crea un archivo `.env` en la raiz del monorepositorio con las variables necesarias. Ejemplo:
      ```env
      PORT=4000
-     MONGO_URI=mongodb://localhost:27017/test-meli
-     JWT_SECRET=tu_secreto
+     MONGO_URI=mongodb://localhost:27017/gestionpro
      ```
 
 ## Scripts Disponibles
