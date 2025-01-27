@@ -35,11 +35,7 @@ Asegúrate de tener instalados los siguientes componentes antes de trabajar con 
    ```
 
 3. Configura los entornos para el frontend y el backend:
-
-   - **Frontend**: Crea un archivo `.env` en la carpeta `frontend/` con las variables necesarias. Ejemplo:
-     ```env
-     REACT_APP_API_URL=http://localhost:4000/api
-     ```
+4. 
    - **Backend**: Crea un archivo `.env` en la raiz del monorepositorio con las variables necesarias. Ejemplo:
      ```env
      PORT=4000
@@ -72,7 +68,8 @@ Asegúrate de tener instalados los siguientes componentes antes de trabajar con 
 
 El backend se puede desplegar utilizando Docker. Asegúrate de tener Docker configurado correctamente:
 
-1. En este caso el despliegue es es fly.io
+1. En este caso el despliegue es en fly.io
+2. Antes de ejecutar cualquier codigo de fly.io asegurate de tener toda la configuración
 
 ejecuta ``` fly deploy ``` si has realizado algun cambio en la bd
 
