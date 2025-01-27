@@ -17,7 +17,6 @@ Asegúrate de tener instalados los siguientes componentes antes de trabajar con 
 
 - Node.js (v16 o superior)
 - Yarn (preferido sobre npm)
-- Docker (opcional, para despliegue y pruebas en contenedores)
 - MongoDB (puedes usar una instancia local o un servicio en la nube como MongoDB Atlas)
 
 ## Configuración del Proyecto
