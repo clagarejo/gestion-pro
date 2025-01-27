@@ -1,6 +1,6 @@
 # Monorepositorio `GestionPro`
 
-Este es un monorepositorio para manejar el desarrollo de una aplicación que incluye un backend y un frontend. A continuación, encontrarás información detallada sobre cómo configurar, ejecutar y contribuir al proyecto.
+Este es un monorepositorio para manejar el desarrollo de una aplicación para manejar productos. Incluye un backend y un frontend. A continuación, encontrarás información detallada sobre cómo configurar, ejecutar y contribuir al proyecto.
 
 ---
 
@@ -8,7 +8,7 @@ Este es un monorepositorio para manejar el desarrollo de una aplicación que inc
 
 El monorepositorio contiene las siguientes carpetas principales:
 
-- **frontend/**: Código fuente del cliente desarrollado con React, usando Sass para estilos, Zustand para el manejo del estado, y conectado a una API.
+- **cliente/**: Código fuente del cliente desarrollado con React, usando Sass para estilos, Zustand para el manejo del estado, y conectado a una API.
 - **servidor/**: Código fuente del servidor desarrollado en Node.js con Express y MongoDB como base de datos.
 
 ## Requisitos Previos
@@ -113,5 +113,7 @@ En este caso fue desplegado en vercel.
 - **SweetAlert2**: Librería para mostrar alertas y mensajes en el frontend.
 
 ---
+
+Aqui te dejo el link de la aplicacion desplegada: https://gestion-pro-cliente.vercel.app/
 
 ¡Gracias por contribuir a este proyecto! Si tienes dudas o sugerencias, no dudes en abrir un issue o contactarnos directamente.
