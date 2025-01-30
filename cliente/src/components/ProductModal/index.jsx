@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useProductForm } from '@/hooks/useProductForm';
 import { ProductForm } from './ProductForm';
 import { useProductStore } from '@/store/useProductStore';
@@ -15,7 +16,7 @@ export const ProductModal = ({ product, onClose }) => {
 
         try {
             if (product) {
-                updateProduct(product.product._id, formData);
+                updateProduct(product._id, formData);
             } else {
                 addProduct(formData);
             }
@@ -42,4 +43,16 @@ export const ProductModal = ({ product, onClose }) => {
             </div>
         </div>
     );
+};
+
+
+ProductModal.propTypes = {
+    product: PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        category: PropTypes.string.isRequired,
+        price: PropTypes.number.isRequired,
+        stock: PropTypes.number.isRequired,
+    }),
+    onClose: PropTypes.func.isRequired,
 };

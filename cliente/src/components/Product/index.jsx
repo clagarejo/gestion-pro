@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import './styles.scss';
 import { useProductStore } from '@/store/useProductStore';
@@ -16,7 +17,7 @@ export const Product = ({ product, handleOpenModal }) => {
     };
 
     const handleDeleteProduct = () => {
-        console.log(productId, 'al eliminar')
+        console.log(productId, 'al eliminar');
         deleteProduct(productId);
     };
 
@@ -30,7 +31,7 @@ export const Product = ({ product, handleOpenModal }) => {
                 <td className="tr-options">
                     <button
                         className="button-options editBottom"
-                        onClick={() => handleOpenModal({ product })}
+                        onClick={() => handleOpenModal(product)}
                     >
                         <FaEdit />
                     </button>
@@ -44,4 +45,15 @@ export const Product = ({ product, handleOpenModal }) => {
             )}
         </tr>
     );
+};
+
+Product.propTypes = {
+    product: PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        category: PropTypes.string.isRequired,
+        price: PropTypes.number.isRequired,
+        stock: PropTypes.number.isRequired,
+    }).isRequired,
+    handleOpenModal: PropTypes.func.isRequired,
 };

@@ -12,10 +12,10 @@ export const useProductForm = (product) => {
     useEffect(() => {
         if (product) {
             setFormData({
-                name: product.product.name || '',
-                category: product.product.category || '',
-                price: product.product.price || '',
-                stock: product.product.stock || ''
+                name: product.name || '',
+                category: product.category || '',
+                price: product.price || '',
+                stock: product.stock || ''
             });
         } else {
             setFormData({
