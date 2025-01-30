@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-import { FaCloudUploadAlt, FaPlus, FaTrash } from 'react-icons/fa';
+import PropTypes from 'prop-types';
+import { FaCloudUploadAlt, FaPlus } from 'react-icons/fa';
 
-export const ActionButtons = ({ handleFileUpload, handleOpenModal, handleMassiveDeleteProducts, fileInputRef, selected }) => {
+export const ActionButtons = ({ handleFileUpload, handleOpenModal, fileInputRef }) => {
     useEffect(() => {
         const interval = setInterval(() => {
             if (fileInputRef.current) {
@@ -29,4 +30,12 @@ export const ActionButtons = ({ handleFileUpload, handleOpenModal, handleMassive
             </button>
         </div>
     );
+};
+
+ActionButtons.propTypes = {
+    handleFileUpload: PropTypes.func.isRequired,
+    handleOpenModal: PropTypes.func.isRequired,
+    fileInputRef: PropTypes.shape({
+        current: PropTypes.instanceOf(Element)
+    }).isRequired
 };

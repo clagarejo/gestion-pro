@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export const ProductForm = ({ formData, handleChange, handleSubmit }) => (
     <form onSubmit={handleSubmit}>
@@ -51,3 +52,14 @@ export const ProductForm = ({ formData, handleChange, handleSubmit }) => (
         </div>
     </form>
 );
+
+ProductForm.propTypes = {
+    formData: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        category: PropTypes.string.isRequired,
+        price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        stock: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    }).isRequired,
+    handleChange: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+};
